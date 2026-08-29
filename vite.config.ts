@@ -8,8 +8,10 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   plugins: [
     tanstackStart({
-      target: "vercel",
-      server: { entry: "src/server.ts" },
+      server: { 
+        preset: "vercel",
+        entry: "src/server.ts" 
+      },
     }),
     react(),
     tailwindcss(),
@@ -44,13 +46,13 @@ export default defineConfig({
         runtimeCaching: [
           {
             // HTML navigations: always try the network first, fall back to the cached shell.
-            urlPattern: ({ request }: { request: Request }) => request.mode === "navigate",
+            urlPattern: ({ request }) => request.mode === "navigate",
             handler: "NetworkFirst",
             options: { cacheName: "railex-pages", networkTimeoutSeconds: 4 },
           },
           {
             // Hashed same-origin build assets, audio, logos and icons.
-            urlPattern: ({ request, sameOrigin }: { request: Request; sameOrigin: boolean }) =>
+            urlPattern: ({ request, sameOrigin }) =>
               sameOrigin && ["script", "style", "image", "font", "audio"].includes(request.destination),
             handler: "CacheFirst",
             options: {
@@ -59,7 +61,7 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: ({ url, sameOrigin }: { url: URL; sameOrigin: boolean }) =>
+            urlPattern: ({ url, sameOrigin }) =>
               sameOrigin && url.pathname.endsWith(".json"),
             handler: "StaleWhileRevalidate",
             options: { cacheName: "railex-data" },
